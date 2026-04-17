@@ -1,50 +1,58 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cainos.PixelArtTopDown_Basic
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     public class TopDownCharacterController : MonoBehaviour
     {
         public float speed;
 
-        private Animator animator;
+        public Vector2 CurrentMoveInput { get; private set; }
+        public Vector2 CurrentFacing { get; private set; } = Vector2.down;
 
-        private void Start()
+        private Animator animator;
+        private Rigidbody2D body;
+
+        private void Awake()
         {
             animator = GetComponent<Animator>();
+            body = GetComponent<Rigidbody2D>();
         }
-
 
         private void Update()
         {
-            Vector2 dir = Vector2.zero;
-            if (Input.GetKey(KeyCode.A))
+            var input = new Vector2(
+                Input.GetAxisRaw("Horizontal"),
+                Input.GetAxisRaw("Vertical")
+            );
+
+            CurrentMoveInput = Vector2.ClampMagnitude(input, 1f);
+
+            if (CurrentMoveInput.sqrMagnitude > 0.0001f)
             {
-                dir.x = -1;
-                animator.SetInteger("Direction", 3);
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                dir.x = 1;
-                animator.SetInteger("Direction", 2);
+                CurrentFacing = CurrentMoveInput.normalized;
             }
 
-            if (Input.GetKey(KeyCode.W))
+            if (animator != null)
             {
-                dir.y = 1;
-                animator.SetInteger("Direction", 1);
+                animator.SetBool("IsMoving", CurrentMoveInput.sqrMagnitude > 0.0001f);
+                animator.SetInteger("Direction", GetDirectionIndex(CurrentFacing));
             }
-            else if (Input.GetKey(KeyCode.S))
+        }
+
+        private void FixedUpdate()
+        {
+            body.linearVelocity = CurrentMoveInput * speed;
+        }
+
+        private static int GetDirectionIndex(Vector2 direction)
+        {
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
             {
-                dir.y = -1;
-                animator.SetInteger("Direction", 0);
+                return direction.x < 0f ? 3 : 2;
             }
 
-            dir.Normalize();
-            animator.SetBool("IsMoving", dir.magnitude > 0);
-
-            GetComponent<Rigidbody2D>().linearVelocity = speed * dir;
+            return direction.y > 0f ? 1 : 0;
         }
     }
 }
