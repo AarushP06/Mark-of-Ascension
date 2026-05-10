@@ -1,4 +1,5 @@
 using Cainos.PixelArtTopDown_Basic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MarkOfAscension.Gameplay
@@ -14,11 +15,16 @@ namespace MarkOfAscension.Gameplay
         [SerializeField] private float attackPointDistance = 0.55f;
 
         private TopDownCharacterController controller;
+        private PlayerVisualAnimatorBridge visualAnimatorBridge;
         private float nextAttackTime;
+        private Vector2 lastAttackDirection = Vector2.down;
+
+        public Vector2 LastAttackDirection => lastAttackDirection;
 
         private void Awake()
         {
             controller = GetComponent<TopDownCharacterController>();
+            visualAnimatorBridge = GetComponentInChildren<PlayerVisualAnimatorBridge>();
 
             if (attackPoint == null)
             {
@@ -55,12 +61,31 @@ namespace MarkOfAscension.Gameplay
                 return;
             }
 
-            var hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+            visualAnimatorBridge?.PlayAttackAnimation();
+
+            var hits = enemyLayers.value == 0
+                ? Physics2D.OverlapCircleAll(attackPoint.position, attackRange)
+                : Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+            var damagedObjects = new HashSet<GameObject>();
 
             foreach (var hit in hits)
             {
-                hit.gameObject.SendMessage("TakeDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
-                Debug.Log($"[PlayerAttack] Hit {hit.name} for {attackDamage} damage.");
+                if (hit.transform == transform || hit.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                var targetObject = hit.attachedRigidbody != null
+                    ? hit.attachedRigidbody.gameObject
+                    : hit.transform.root.gameObject;
+
+                if (!damagedObjects.Add(targetObject))
+                {
+                    continue;
+                }
+
+                targetObject.SendMessage("TakeDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
+                Debug.Log($"[PlayerAttack] Hit {targetObject.name} for {attackDamage} damage.");
             }
         }
 
@@ -74,10 +99,11 @@ namespace MarkOfAscension.Gameplay
             var facing = controller != null ? controller.CurrentFacing : Vector2.down;
             if (facing.sqrMagnitude < 0.0001f)
             {
-                facing = Vector2.down;
+                facing = lastAttackDirection;
             }
 
-            attackPoint.localPosition = facing.normalized * attackPointDistance;
+            lastAttackDirection = facing.normalized;
+            attackPoint.localPosition = lastAttackDirection * attackPointDistance;
         }
 
         private void OnDrawGizmosSelected()

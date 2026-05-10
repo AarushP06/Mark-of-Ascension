@@ -16,6 +16,8 @@ namespace MarkOfAscension.Gameplay
         [SerializeField] private TopDownCharacterController controllerSource;
         [SerializeField] private string idleStateName = "idle";
         [SerializeField] private string walkStateName = "walk";
+        [SerializeField] private string attackStateName = "attack";
+        [SerializeField] private float attackStateDuration = 0.2f;
         [SerializeField] private string moveXParameter = "movementX";
         [SerializeField] private string moveYParameter = "movementY";
         [SerializeField] private float movementThreshold = 0.01f;
@@ -26,6 +28,8 @@ namespace MarkOfAscension.Gameplay
         private bool hasMoveYParameter;
         private int idleStateHash;
         private int walkStateHash;
+        private int attackStateHash;
+        private float actionStateEndTime;
 
         private void Awake()
         {
@@ -51,6 +55,7 @@ namespace MarkOfAscension.Gameplay
 
             idleStateHash = Animator.StringToHash(idleStateName);
             walkStateHash = Animator.StringToHash(walkStateName);
+            attackStateHash = Animator.StringToHash(attackStateName);
             CacheAnimatorParameters();
         }
 
@@ -101,12 +106,28 @@ namespace MarkOfAscension.Gameplay
                 }
             }
 
+            if (Time.time < actionStateEndTime)
+            {
+                return;
+            }
+
             var desiredState = isMoving ? walkStateHash : idleStateHash;
             var stateInfo = targetAnimator.GetCurrentAnimatorStateInfo(0);
             if (!stateInfo.shortNameHash.Equals(desiredState))
             {
                 targetAnimator.Play(desiredState, 0, 0f);
             }
+        }
+
+        public void PlayAttackAnimation()
+        {
+            if (targetAnimator == null || string.IsNullOrWhiteSpace(attackStateName))
+            {
+                return;
+            }
+
+            actionStateEndTime = Time.time + attackStateDuration;
+            targetAnimator.Play(attackStateHash, 0, 0f);
         }
 
         private void CacheAnimatorParameters()

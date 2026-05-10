@@ -1083,6 +1083,7 @@ GameObject:
   - component: {fileID: 201332146}
   - component: {fileID: 201332147}
   - component: {fileID: 201332148}
+  - component: {fileID: 201332149}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -1170,6 +1171,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cainos.PixelArtTopDown_Basic.CameraFollow
   target: {fileID: 1143096494}
   lerpSpeed: 5
+--- !u!114 &201332149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201332145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5175b18d753ec244b62f88fc3fd715f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarkOfAscension.Gameplay.CameraFollow2D
+  targetTag: Player
+  offset: {x: 0, y: 0, z: -10}
+  smoothSpeed: 8
+  orthographicSize: 7
+  clampX: 0
+  minX: 0
+  maxX: 0
+  clampY: 0
+  minY: -8.5
+  maxY: 20.5
 --- !u!1 &215088180
 GameObject:
   m_ObjectHideFlags: 0
@@ -5466,18 +5489,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.76135
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.76135
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.76135
+      objectReference: {fileID: 0}
+    - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4
+      value: -3.5227
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.011932
       objectReference: {fileID: 0}
     - target: {fileID: 5628018141983903106, guid: ef67ba864d1ecc042b5f4cf48455c0a6,
         type: 3}
@@ -11699,6 +11737,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2031576276}
+  - component: {fileID: 2031576277}
   m_Layer: 0
   m_Name: PlayerHealthUI
   m_TagString: Untagged
@@ -11726,6 +11765,20 @@ RectTransform:
   m_AnchoredPosition: {x: 30, y: -30}
   m_SizeDelta: {x: 260, y: 32}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &2031576277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031576275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04f39acd6e0643aab11e593ed79c0977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarkOfAscension.UI.PlayerHealthBarUI
+  healthSlider: {fileID: 1832226602}
+  playerTag: Player
 --- !u!1 &2032243287
 GameObject:
   m_ObjectHideFlags: 0

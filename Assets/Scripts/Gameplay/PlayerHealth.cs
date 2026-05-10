@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace MarkOfAscension.Gameplay
@@ -8,17 +10,28 @@ namespace MarkOfAscension.Gameplay
         [SerializeField] private int maxHealth = 10;
         [SerializeField] private string defaultSpawnName = "PlayerSpawn";
         [SerializeField] private string fallbackSpawnName = "PlayerSpawnPoint";
+        [SerializeField] private float respawnDelay = 0.75f;
+        [SerializeField] private bool hideSpriteWhileDead = true;
 
         private Rigidbody2D body;
+        private SpriteRenderer[] spriteRenderers;
+        private Collider2D[] colliders;
+        private Coroutine respawnRoutine;
 
         public int MaxHealth => maxHealth;
         public int CurrentHealth { get; private set; }
         public bool IsDead { get; private set; }
+        public event Action<int, int> HealthChanged;
+        public event Action Died;
+        public event Action Respawned;
 
         private void Awake()
         {
             body = GetComponent<Rigidbody2D>();
+            spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+            colliders = GetComponents<Collider2D>();
             CurrentHealth = maxHealth;
+            NotifyHealthChanged();
         }
 
         public void TakeDamage(int damage)
@@ -29,6 +42,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
+            NotifyHealthChanged();
             Debug.Log($"[PlayerHealth] {gameObject.name} took {damage} damage. Health: {CurrentHealth}/{maxHealth}");
 
             if (CurrentHealth <= 0)
@@ -45,6 +59,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+            NotifyHealthChanged();
             Debug.Log($"[PlayerHealth] {gameObject.name} healed {amount}. Health: {CurrentHealth}/{maxHealth}");
         }
 
@@ -52,13 +67,45 @@ namespace MarkOfAscension.Gameplay
         {
             CurrentHealth = maxHealth;
             IsDead = false;
+            NotifyHealthChanged();
         }
 
         private void Die()
         {
+            if (IsDead)
+            {
+                return;
+            }
+
             IsDead = true;
             Debug.Log($"[PlayerHealth] {gameObject.name} died. Respawning at the current scene spawn.");
+            Died?.Invoke();
+
+            if (respawnRoutine != null)
+            {
+                StopCoroutine(respawnRoutine);
+            }
+
+            respawnRoutine = StartCoroutine(RespawnRoutine());
+        }
+
+        private IEnumerator RespawnRoutine()
+        {
+            SetDeadState(true);
+
+            if (body != null)
+            {
+                body.linearVelocity = Vector2.zero;
+                body.simulated = false;
+            }
+
+            if (respawnDelay > 0f)
+            {
+                yield return new WaitForSeconds(respawnDelay);
+            }
+
             RespawnAtSceneSpawn();
+            respawnRoutine = null;
         }
 
         private void RespawnAtSceneSpawn()
@@ -76,6 +123,14 @@ namespace MarkOfAscension.Gameplay
             }
 
             RestoreFullHealth();
+            SetDeadState(false);
+
+            if (body != null)
+            {
+                body.simulated = true;
+            }
+
+            Respawned?.Invoke();
         }
 
         private Transform FindSpawnPoint()
@@ -102,6 +157,35 @@ namespace MarkOfAscension.Gameplay
             }
 
             return null;
+        }
+
+        private void SetDeadState(bool isDead)
+        {
+            foreach (var collider2D in colliders)
+            {
+                if (collider2D != null)
+                {
+                    collider2D.enabled = !isDead;
+                }
+            }
+
+            if (!hideSpriteWhileDead)
+            {
+                return;
+            }
+
+            foreach (var spriteRenderer in spriteRenderers)
+            {
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.enabled = !isDead;
+                }
+            }
+        }
+
+        private void NotifyHealthChanged()
+        {
+            HealthChanged?.Invoke(CurrentHealth, maxHealth);
         }
     }
 }
