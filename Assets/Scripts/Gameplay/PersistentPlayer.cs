@@ -10,6 +10,17 @@ namespace MarkOfAscension.Gameplay
 
         private Rigidbody2D body;
 
+        public static void DestroyPersistentInstance()
+        {
+            if (Instance == null)
+            {
+                return;
+            }
+
+            Destroy(Instance.gameObject);
+            Instance = null;
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -32,6 +43,14 @@ namespace MarkOfAscension.Gameplay
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

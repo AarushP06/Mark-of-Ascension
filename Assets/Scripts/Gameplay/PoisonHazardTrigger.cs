@@ -34,9 +34,7 @@ namespace MarkOfAscension.Gameplay
 
             nextDamageTime = Time.time + tickInterval;
             other.gameObject.SendMessage("TakeDamage", damagePerTick, SendMessageOptions.DontRequireReceiver);
-            Debug.Log($"[PoisonHazardTrigger] {other.name} touched poison for {damagePerTick} damage."
-                + " Add a TakeDamage(int) method later to replace this placeholder log."
-            );
+            Debug.Log($"[PoisonHazardTrigger] {other.name} touched poison for {damagePerTick} damage.");
         }
     }
 }
