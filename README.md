@@ -1,6 +1,6 @@
 # Mark of Ascension
 
-Mark of Ascension is a 2D top-down action game built in Unity. The player fights through a sequence of dark fantasy stages, defeats enemy waves, clears boss encounters, and progresses deeper into the fortress.
+Mark of Ascension is a 2D top-down action game built in Unity. The player fights through a sequence of dark fantasy stages, clears enemy waves, defeats bosses, unlocks new elemental powers, and grows stronger from stage to stage.
 
 ## Overview
 
@@ -8,10 +8,12 @@ The game currently includes:
 
 - a main menu and lobby flow
 - persistent player spawning across scenes
-- player movement, melee attack, and health
-- enemy damage, simple enemy AI, and boss progression
+- player movement, melee attack, health, and run-based progression
+- enemy contact damage, simple enemy AI, and boss progression
 - stage portals for scene-to-scene progression
 - hazard zones that damage the player
+- level-up reward popups after stage clears
+- elemental attack upgrades unlocked by progression
 - three playable combat stages:
   - `Stage01`
   - `Stage02`
@@ -32,13 +34,24 @@ Each stage uses a simple progression loop:
 - clear the enemy wave
 - unlock the path to the boss
 - defeat the boss
+- gain a reward power or stat upgrade
 - use the portal to move forward or return
 
 ## Stage Themes
 
 - `Stage01`: early dungeon/combat introduction
-- `Stage02`: fire-themed fortress stage
+- `Stage02`: tougher fortress stage with a stronger mid-game boss
 - `Stage03`: dark fortress final-stage area with stronger hazards and a larger boss approach
+
+## Stage Rewards
+
+- clearing `Stage01` grants `Poison Strike`
+- `Poison Strike` causes player attacks to inflict poison damage over time
+- clearing `Stage01` also increases max health
+- clearing `Stage02` grants `Flame Strike`
+- `Flame Strike` causes player attacks to inflict fire damage over time
+- clearing `Stage02` also improves attack damage and attack speed
+- level-up notifications appear after entering the next stage portal
 
 ## Controls
 
@@ -50,6 +63,7 @@ Each stage uses a simple progression loop:
 ### Player
 
 - health and damage handling
+- max-health upgrades through stage rewards
 - death/game-over screen
 - return to main menu on death
 - persistent player handling between scenes
@@ -57,9 +71,12 @@ Each stage uses a simple progression loop:
 ### Combat
 
 - short-range melee attack
+- poison damage over time after `Stage01`
+- fire damage over time after `Stage02`
 - enemy contact damage
 - boss spawning after wave clear
 - scene portals unlocked by progression
+- boss difficulty tuning per stage
 
 ### Hazards
 
@@ -93,12 +110,13 @@ This project is a Unity project. To run it:
 
 ## Current Status
 
-The project is in active development. The main gameplay loop is playable, and the current focus has been:
+The project is in active development. The current playable loop includes:
 
-- building stage progression
-- improving collision and boundaries
-- polishing Stage03
-- making bosses, hazards, and portals work reliably
+- full progression from `MainMenu` to `Stage03`
+- stage boss rewards that make later stages easier
+- poison and fire elemental attack unlocks
+- level-up reward popups between stages
+- tuned Stage02 and Stage03 boss difficulty
 
 ## Notes
 
