@@ -26,8 +26,9 @@ namespace MarkOfAscension.Gameplay
         private SpriteRenderer[] spriteRenderers;
         private Collider2D[] colliders;
         private Coroutine respawnRoutine;
+        private int maxHealthBonus;
 
-        public int MaxHealth => maxHealth;
+        public int MaxHealth => maxHealth + maxHealthBonus;
         public int CurrentHealth { get; private set; }
         public bool IsDead { get; private set; }
         public event Action<int, int> HealthChanged;
@@ -39,7 +40,7 @@ namespace MarkOfAscension.Gameplay
             body = GetComponent<Rigidbody2D>();
             spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
             colliders = GetComponents<Collider2D>();
-            CurrentHealth = maxHealth;
+            CurrentHealth = MaxHealth;
             RefreshSceneUiReferences();
             SceneManager.sceneLoaded += OnSceneLoaded;
             NotifyHealthChanged();
@@ -63,7 +64,7 @@ namespace MarkOfAscension.Gameplay
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
             NotifyHealthChanged();
-            Debug.Log($"[PlayerHealth] {gameObject.name} took {damage} damage. Health: {CurrentHealth}/{maxHealth}");
+            Debug.Log($"[PlayerHealth] {gameObject.name} took {damage} damage. Health: {CurrentHealth}/{MaxHealth}");
 
             if (CurrentHealth <= 0)
             {
@@ -78,15 +79,29 @@ namespace MarkOfAscension.Gameplay
                 return;
             }
 
-            CurrentHealth = Mathf.Min(maxHealth, CurrentHealth + amount);
+            CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
             NotifyHealthChanged();
-            Debug.Log($"[PlayerHealth] {gameObject.name} healed {amount}. Health: {CurrentHealth}/{maxHealth}");
+            Debug.Log($"[PlayerHealth] {gameObject.name} healed {amount}. Health: {CurrentHealth}/{MaxHealth}");
         }
 
         public void RestoreFullHealth()
         {
-            CurrentHealth = maxHealth;
+            CurrentHealth = MaxHealth;
             IsDead = false;
+            NotifyHealthChanged();
+        }
+
+        public void AddMaxHealthBonus(int amount, bool restoreToFullHealth = false)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            maxHealthBonus += amount;
+            CurrentHealth = restoreToFullHealth
+                ? MaxHealth
+                : Mathf.Min(CurrentHealth + amount, MaxHealth);
             NotifyHealthChanged();
         }
 
@@ -215,7 +230,7 @@ namespace MarkOfAscension.Gameplay
 
         private void NotifyHealthChanged()
         {
-            HealthChanged?.Invoke(CurrentHealth, maxHealth);
+            HealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

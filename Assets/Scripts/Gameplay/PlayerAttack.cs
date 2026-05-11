@@ -13,11 +13,21 @@ namespace MarkOfAscension.Gameplay
         [SerializeField] private float attackCooldown = 0.35f;
         [SerializeField] private LayerMask enemyLayers;
         [SerializeField] private float attackPointDistance = 0.55f;
+        [SerializeField] private bool poisonUnlocked;
+        [SerializeField] private int poisonDamagePerTick = 1;
+        [SerializeField] private float poisonTickInterval = 0.6f;
+        [SerializeField] private int poisonTickCount = 3;
+        [SerializeField] private bool fireUnlocked;
+        [SerializeField] private int fireDamagePerTick = 1;
+        [SerializeField] private float fireTickInterval = 0.45f;
+        [SerializeField] private int fireTickCount = 4;
 
         private TopDownCharacterController controller;
         private PlayerVisualAnimatorBridge visualAnimatorBridge;
         private float nextAttackTime;
         private Vector2 lastAttackDirection = Vector2.down;
+        private int attackDamageBonus;
+        private float attackCooldownReduction;
 
         public Vector2 LastAttackDirection => lastAttackDirection;
 
@@ -53,7 +63,7 @@ namespace MarkOfAscension.Gameplay
 
         private void Attack()
         {
-            nextAttackTime = Time.time + attackCooldown;
+            nextAttackTime = Time.time + CurrentAttackCooldown;
 
             if (attackPoint == null)
             {
@@ -84,9 +94,89 @@ namespace MarkOfAscension.Gameplay
                     continue;
                 }
 
-                targetObject.SendMessage("TakeDamage", attackDamage, SendMessageOptions.DontRequireReceiver);
-                Debug.Log($"[PlayerAttack] Hit {targetObject.name} for {attackDamage} damage.");
+                targetObject.SendMessage("TakeDamage", CurrentAttackDamage, SendMessageOptions.DontRequireReceiver);
+                ApplyPoison(targetObject);
+                ApplyFire(targetObject);
+                Debug.Log($"[PlayerAttack] Hit {targetObject.name} for {CurrentAttackDamage} damage.");
             }
+        }
+
+        public void UnlockPoisonDamage()
+        {
+            poisonUnlocked = true;
+        }
+
+        public void AddAttackDamageBonus(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            attackDamageBonus += amount;
+        }
+
+        public void UnlockFireDamage()
+        {
+            fireUnlocked = true;
+        }
+
+        public void ReduceAttackCooldown(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+
+            attackCooldownReduction += amount;
+        }
+
+        private int CurrentAttackDamage => attackDamage + attackDamageBonus;
+
+        private float CurrentAttackCooldown => Mathf.Max(0.1f, attackCooldown - attackCooldownReduction);
+
+        private void ApplyPoison(GameObject targetObject)
+        {
+            if (!poisonUnlocked || targetObject == null)
+            {
+                return;
+            }
+
+            var enemyHealth = targetObject.GetComponent<SimpleEnemyHealth>();
+            if (enemyHealth == null || enemyHealth.IsDead)
+            {
+                return;
+            }
+
+            var poisonEffect = targetObject.GetComponent<EnemyPoisonEffect>();
+            if (poisonEffect == null)
+            {
+                poisonEffect = targetObject.AddComponent<EnemyPoisonEffect>();
+            }
+
+            poisonEffect.ApplyPoison(poisonDamagePerTick, poisonTickInterval, poisonTickCount);
+        }
+
+        private void ApplyFire(GameObject targetObject)
+        {
+            if (!fireUnlocked || targetObject == null)
+            {
+                return;
+            }
+
+            var enemyHealth = targetObject.GetComponent<SimpleEnemyHealth>();
+            if (enemyHealth == null || enemyHealth.IsDead)
+            {
+                return;
+            }
+
+            var fireEffect = targetObject.GetComponent<EnemyFireEffect>();
+            if (fireEffect == null)
+            {
+                fireEffect = targetObject.AddComponent<EnemyFireEffect>();
+            }
+
+            fireEffect.ApplyFire(fireDamagePerTick, fireTickInterval, fireTickCount);
         }
 
         private void UpdateAttackPointPosition()

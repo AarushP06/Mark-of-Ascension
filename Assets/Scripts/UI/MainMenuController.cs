@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using MarkOfAscension.Gameplay;
+using MarkOfAscension.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,6 +29,8 @@ public class MainMenuController : MonoBehaviour
 
     public void StartGame()
     {
+        PersistentPlayer.DestroyPersistentInstance();
+        PowerRewardNotificationUI.DestroyInstance();
         SceneManager.LoadScene(lobbySceneName);
     }
 

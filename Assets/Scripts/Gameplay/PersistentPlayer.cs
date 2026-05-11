@@ -32,6 +32,7 @@ namespace MarkOfAscension.Gameplay
             Instance = this;
             body = GetComponent<Rigidbody2D>();
             gameObject.tag = "Player";
+            EnsureRequiredComponents();
             DontDestroyOnLoad(gameObject);
         }
 
@@ -80,6 +81,14 @@ namespace MarkOfAscension.Gameplay
             }
 
             return "PlayerSpawnPoint";
+        }
+
+        private void EnsureRequiredComponents()
+        {
+            if (GetComponent<PlayerProgression>() == null)
+            {
+                gameObject.AddComponent<PlayerProgression>();
+            }
         }
     }
 }

@@ -10,13 +10,13 @@ namespace MarkOfAscension.Gameplay
         [SerializeField] private bool hideWhileLocked = true;
 
         private Collider2D portalCollider;
-        private SpriteRenderer portalRenderer;
+        private SpriteRenderer[] portalRenderers;
         private ScenePortal scenePortal;
 
         private void Awake()
         {
             portalCollider = GetComponent<Collider2D>();
-            portalRenderer = GetComponent<SpriteRenderer>();
+            portalRenderers = GetComponentsInChildren<SpriteRenderer>(true);
             scenePortal = GetComponent<ScenePortal>();
             ApplyVisualState();
         }
@@ -40,8 +40,18 @@ namespace MarkOfAscension.Gameplay
                 scenePortal.SetPortalEnabled(isUnlocked);
             }
 
-            if (portalRenderer != null)
+            if (portalRenderers == null)
             {
+                return;
+            }
+
+            foreach (var portalRenderer in portalRenderers)
+            {
+                if (portalRenderer == null)
+                {
+                    continue;
+                }
+
                 portalRenderer.enabled = isUnlocked || !hideWhileLocked;
                 portalRenderer.color = isUnlocked
                     ? new Color(0.65f, 0.2f, 1f, 0.9f)

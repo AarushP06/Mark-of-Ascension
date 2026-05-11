@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MarkOfAscension.Gameplay
 {
@@ -162,9 +163,19 @@ namespace MarkOfAscension.Gameplay
         {
             defeatedBoss.Died -= OnBossDied;
             bossDefeated = true;
+            GrantStageReward();
             PositionExitPortal();
             Debug.Log("[Stage01FlowController] Boss defeated. Exit portal unlocked.");
             ApplyState();
+        }
+
+        private void GrantStageReward()
+        {
+            var player = PersistentPlayer.Instance != null
+                ? PersistentPlayer.Instance.gameObject
+                : GameObject.FindGameObjectWithTag("Player");
+            var progression = player != null ? player.GetComponent<PlayerProgression>() : null;
+            progression?.GrantRewardForStage(SceneManager.GetActiveScene().name);
         }
 
         private void ConfigureEnemy(

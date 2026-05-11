@@ -2704,9 +2704,9 @@ MonoBehaviour:
   smallEnemySpeed: 2.15
   smallEnemyDamage: 2
   bossName: Stage02_PoisonSkullBoss
-  bossHealth: 18
-  bossSpeed: 1.5
-  bossDamage: 3
+  bossHealth: 12
+  bossSpeed: 1.25
+  bossDamage: 2
   bossScaleMultiplier: 2.15
   unlockedPortalPosition: {x: 13, y: 17, z: 0}
   bossPathBlockerNames:

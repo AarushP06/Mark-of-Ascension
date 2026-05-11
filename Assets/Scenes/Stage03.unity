@@ -1320,7 +1320,7 @@ Transform:
   m_GameObject: {fileID: 255090827}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.5, y: -6.5, z: 0}
+  m_LocalPosition: {x: -4.21, y: -7.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3407,8 +3407,8 @@ MonoBehaviour:
   smallEnemyDamage: 2
   bossName: Stage03_CorruptedSkullLord
   bossHealth: 28
-  bossSpeed: 1.85
-  bossDamage: 4
+  bossSpeed: 1.55
+  bossDamage: 3
   bossScaleMultiplier: 2.6
   unlockedPortalPosition: {x: 12, y: 21, z: 0}
   bossPathBlockerNames:
@@ -10928,12 +10928,12 @@ PrefabInstance:
     - target: {fileID: 8892672427159946147, guid: 85d3331f3716f4e65bb90cd2b695ef06,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.3
+      value: -4.91
       objectReference: {fileID: 0}
     - target: {fileID: 8892672427159946147, guid: 85d3331f3716f4e65bb90cd2b695ef06,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.8
+      value: -4.38
       objectReference: {fileID: 0}
     - target: {fileID: 8892672427159946147, guid: 85d3331f3716f4e65bb90cd2b695ef06,
         type: 3}
