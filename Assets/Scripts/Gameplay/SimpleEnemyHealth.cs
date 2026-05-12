@@ -35,6 +35,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
+            GameAudio.PlayEnemyHit();
             Debug.Log($"[SimpleEnemyHealth] {gameObject.name} took {damage} damage. Health: {CurrentHealth}/{maxHealth}");
 
             if (CurrentHealth <= 0)
@@ -51,6 +52,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             IsDead = true;
+            GameAudio.PlayEnemyDeath(isBoss);
             Died?.Invoke(this);
             Destroy(gameObject);
         }

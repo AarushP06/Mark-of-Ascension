@@ -33,6 +33,7 @@ namespace MarkOfAscension.Gameplay
             body = GetComponent<Rigidbody2D>();
             gameObject.tag = "Player";
             EnsureRequiredComponents();
+            GameAudio.EnsureInstance();
             DontDestroyOnLoad(gameObject);
         }
 

@@ -63,6 +63,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
+            GameAudio.PlayPlayerHurt();
             NotifyHealthChanged();
             Debug.Log($"[PlayerHealth] {gameObject.name} took {damage} damage. Health: {CurrentHealth}/{MaxHealth}");
 

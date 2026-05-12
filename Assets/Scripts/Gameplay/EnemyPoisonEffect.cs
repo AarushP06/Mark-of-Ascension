@@ -43,6 +43,7 @@ namespace MarkOfAscension.Gameplay
                     yield break;
                 }
 
+                GameAudio.PlayPoisonTick();
                 enemyHealth.TakeDamage(poisonDamagePerTick);
             }
 

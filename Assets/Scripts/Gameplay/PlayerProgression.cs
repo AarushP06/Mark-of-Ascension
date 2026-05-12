@@ -54,6 +54,7 @@ namespace MarkOfAscension.Gameplay
                     clearedStage01 = true;
                     playerHealth?.AddMaxHealthBonus(stage01MaxHealthBonus, true);
                     playerAttack?.UnlockPoisonDamage();
+                    GameAudio.PlayLevelUp();
                     QueueRewardNotification(
                         "LEVEL UP",
                         $"New Power Unlocked: <color=#7CFF7C>Poison Strike</color>\nYour attacks now inflict poison damage.\nMax Health +{stage01MaxHealthBonus}");
@@ -71,6 +72,7 @@ namespace MarkOfAscension.Gameplay
                     playerAttack?.ReduceAttackCooldown(stage02AttackCooldownReduction);
                     playerAttack?.UnlockFireDamage();
                     playerHealth?.RestoreFullHealth();
+                    GameAudio.PlayLevelUp();
                     QueueRewardNotification(
                         "LEVEL UP",
                         $"New Power Unlocked: <color=#FF9B5A>Flame Strike</color>\nYour attacks now inflict fire damage.\nAttack Damage +{stage02AttackDamageBonus}\nAttack Speed Up");
@@ -84,6 +86,10 @@ namespace MarkOfAscension.Gameplay
                     }
 
                     clearedStage03 = true;
+                    GameAudio.PlayLevelUp();
+                    QueueRewardNotification(
+                        "VICTORY",
+                        "You defeated the final boss and escaped the fortress.\n<color=#FFD36B>Run Complete</color>");
                     Debug.Log($"[PlayerProgression] Cleared {stageName}. Final stage completed.");
                     return true;
 

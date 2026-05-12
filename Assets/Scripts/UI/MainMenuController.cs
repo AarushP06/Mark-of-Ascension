@@ -16,6 +16,8 @@ public class MainMenuController : MonoBehaviour
 
     private void Awake()
     {
+        GameAudio.EnsureInstance();
+
         if (startButton != null)
         {
             startButton.onClick.AddListener(StartGame);

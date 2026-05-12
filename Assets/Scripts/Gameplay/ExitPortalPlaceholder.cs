@@ -12,18 +12,26 @@ namespace MarkOfAscension.Gameplay
         private Collider2D portalCollider;
         private SpriteRenderer[] portalRenderers;
         private ScenePortal scenePortal;
+        private bool wasUnlocked;
 
         private void Awake()
         {
             portalCollider = GetComponent<Collider2D>();
             portalRenderers = GetComponentsInChildren<SpriteRenderer>(true);
             scenePortal = GetComponent<ScenePortal>();
+            wasUnlocked = isUnlocked;
             ApplyVisualState();
         }
 
         public void SetUnlocked(bool unlocked)
         {
+            if (!wasUnlocked && unlocked)
+            {
+                GameAudio.PlayPortalUnlock();
+            }
+
             isUnlocked = unlocked;
+            wasUnlocked = unlocked;
             ApplyVisualState();
         }
 

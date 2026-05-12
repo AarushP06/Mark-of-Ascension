@@ -64,6 +64,7 @@ namespace MarkOfAscension.Gameplay
         private void Attack()
         {
             nextAttackTime = Time.time + CurrentAttackCooldown;
+            GameAudio.PlayPlayerAttack();
 
             if (attackPoint == null)
             {
@@ -99,6 +100,7 @@ namespace MarkOfAscension.Gameplay
                 ApplyFire(targetObject);
                 Debug.Log($"[PlayerAttack] Hit {targetObject.name} for {CurrentAttackDamage} damage.");
             }
+
         }
 
         public void UnlockPoisonDamage()

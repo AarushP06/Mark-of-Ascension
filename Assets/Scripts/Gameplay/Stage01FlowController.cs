@@ -129,6 +129,7 @@ namespace MarkOfAscension.Gameplay
             currentBoss.Died -= OnBossDied;
             currentBoss.Died += OnBossDied;
 
+            GameAudio.PlayBossSpawn();
             Debug.Log("[Stage01FlowController] Small enemies defeated. Slime boss spawned.");
             ApplyState();
         }

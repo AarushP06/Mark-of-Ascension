@@ -35,6 +35,7 @@ namespace MarkOfAscension.Gameplay
             }
 
             isLoading = true;
+            GameAudio.PlayPortalEnter();
             SceneTransitionState.NextSpawnName = targetSpawnName;
             SceneManager.LoadScene(targetSceneName);
         }
