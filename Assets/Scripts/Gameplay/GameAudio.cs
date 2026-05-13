@@ -10,6 +10,7 @@ namespace MarkOfAscension.Gameplay
         private AudioSource sfxSource;
         private AudioSource musicSource;
         private AudioClip lobbyMusicClip;
+        private AudioClip dungeonMusicClip;
         private AudioClip playerAttackClip;
         private AudioClip enemyHitClip;
         private AudioClip playerHurtClip;
@@ -44,6 +45,7 @@ namespace MarkOfAscension.Gameplay
             musicSource.volume = 0.28f;
 
             lobbyMusicClip = LoadClip("lobby_music");
+            dungeonMusicClip = LoadClip("dungeon_music");
             playerAttackClip = LoadClip("player_attack");
             enemyHitClip = LoadClip("enemy_hit");
             playerHurtClip = LoadClip("player_hurt");
@@ -173,7 +175,7 @@ namespace MarkOfAscension.Gameplay
 
             var clip = sceneName == "MainMenu" || sceneName == "SC_Lobby"
                 ? lobbyMusicClip
-                : null;
+                : dungeonMusicClip;
 
             if (clip == null)
             {
@@ -191,6 +193,9 @@ namespace MarkOfAscension.Gameplay
                 return;
             }
 
+            musicSource.volume = sceneName == "MainMenu" || sceneName == "SC_Lobby"
+                ? 0.28f
+                : 0.22f;
             musicSource.clip = clip;
             musicSource.Play();
         }
