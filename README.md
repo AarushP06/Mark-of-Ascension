@@ -126,4 +126,4 @@ The project is in active development. The current playable loop includes:
 
 ## Author
 
-Created as a game development project by Aarush Patel.
+Created as a Unity game development project by Aarush Patel.
